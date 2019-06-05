@@ -1,5 +1,5 @@
 -module(ejieba_segment).
-
+-on_load(init/0).
 -export([init/0,cut/1]).
 
 init() ->
