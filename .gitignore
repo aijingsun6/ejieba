@@ -5,3 +5,4 @@ ebin
 erl_crash.dump
 *.beam
 priv/*.so
+compile_commands.json

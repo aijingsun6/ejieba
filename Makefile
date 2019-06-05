@@ -9,6 +9,5 @@ compile:
 
 clean:
 	rebar clean
-	rm priv/*.so
 
 .PHONY: all depends compile
