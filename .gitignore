@@ -4,3 +4,4 @@ ebin
 *.iml
 erl_crash.dump
 *.beam
+priv/*.so
