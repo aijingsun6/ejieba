@@ -9,7 +9,7 @@ rebar compile
 
 erl -pa ebin
 
-L = ejieba_segment:cut( unicode:characters_to_binary("xxx") ).
-
+L = ejieba_segment:safe_cut( Arg).
+% Arg:: string | binary
 % L:: [ Bin]
 ```
