@@ -5,7 +5,8 @@ using namespace CppJieba;
 
 extern "C"{
 
-const MixSegment segment("dict/jieba.dict.utf8", "dict/hmm_model.utf8");
+//static MixSegment segment("dict/jieba.dict.utf8", "dict/hmm_model.utf8");
+static MixSegment* segment;
 
 static ERL_NIF_TERM cut(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
@@ -16,7 +17,7 @@ static ERL_NIF_TERM cut(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     s[bin.size] = '\0';
 
     std::vector<std::string> words;
-    segment.cut(s, words);
+    segment->cut(s, words);
 
     ERL_NIF_TERM r = enif_make_list(env, 0);
     ErlNifBinary h;
@@ -34,9 +35,26 @@ static ERL_NIF_TERM cut(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     return result;
 }
 
+static ERL_NIF_TERM load_dict(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    unsigned int len;
+    enif_get_list_length(env, argv[0], &len);
+    char *words_dict = (char *)enif_alloc(++len);
+    enif_get_string(env, argv[0], words_dict, len, ERL_NIF_LATIN1);
+
+    enif_get_list_length(env, argv[1], &len);
+    char *model_dict = (char *)enif_alloc(++len);
+    enif_get_string(env, argv[1], model_dict, len, ERL_NIF_LATIN1);
+
+    // segment.init(words_dict, model_dict);
+    segment = new MixSegment(words_dict, model_dict);
+    return enif_make_atom(env, "ok\0");
+}
+
 static ErlNifFunc nif_funcs[] =
 {
-    {"cut", 1, cut}
+    {"cut", 1, cut},
+    {"load_dict", 2, load_dict}
 };
 }
 ERL_NIF_INIT(ejieba_segment, nif_funcs, NULL, NULL, NULL, NULL)
